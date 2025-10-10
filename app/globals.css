@@ -2,6 +2,8 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 @import "tailwindcss";
 @tailwind utilities;
+@import 'react-grid-layout/css/styles.css';
+@import 'react-resizable/css/styles.css';
 
 :root {
   --foreground: #171717;
@@ -163,4 +165,18 @@ footer {
 aside.left{
     float: left;
     width: 250px;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.3s ease-out;
 }

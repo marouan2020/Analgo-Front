@@ -4,12 +4,24 @@ import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import axios from "axios";
 
+
+interface Condition {
+    field: string;
+    operator: string;
+    value: string;
+}
+
 interface Segment {
     id: number;
     name: string;
     description: string;
     status: string;
-    rules: any[]; // @typescript-eslint/no-explicit-any
+    conditions: Condition[];
+}
+
+interface Field {
+    value: string;
+    label: string;
 }
 
 export default function SegmentsPage() {
@@ -24,10 +36,10 @@ export default function SegmentsPage() {
         description: '',
         status: 'enable',
         analgoToken: analgoToken,
-        conditions: [{ field: '', operator: '', value: '' }],
+        conditions: [{ field: '', operator: '', value: '' }] as Condition[],
     });
     const [loading, setLoading] = useState(false);
-    const [fields, setFields] = useState<{ value: string; label: string }[]>([]);
+    const [fields, setFields] = useState<Field[]>([]);
     const [showConditions, setShowConditions] = useState(false);
 
     useEffect(() => {
@@ -60,20 +72,24 @@ export default function SegmentsPage() {
 
     async function getFields() {
         try {
-            const res = await fetch(process.env.NEXT_PUBLIC_ENDPOINT_ANALGO_SEGMENTS_GET_FIELDS!, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                cache: "no-store",
-            });
+            const analgoToken = localStorage.getItem('analgo_token') ?? '';
+            if (analgoToken) {
+                const params = new URLSearchParams();
+                params.append('analgoToken', analgoToken);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT_ANALGO_SEGMENTS_GET_FIELDS}?${params.toString()}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    cache: "no-store",
+                });
+                if (!res.ok) {
+                    throw new Error(`Erreur API: ${res.status}`);
+                }
+                const data = await res.json();
 
-            if (!res.ok) {
-                throw new Error(`Erreur API: ${res.status}`);
+                return Array.isArray(data) ? data : [];
             }
-            const data = await res.json();
-
-            return Array.isArray(data) ? data : [];
         } catch (err) {
             console.error("Error loading fields:", err);
             return [];
@@ -97,7 +113,6 @@ export default function SegmentsPage() {
 
     const updateCondition = (index: number, key: string, value: string) => {
         const updated = [...formData.conditions];
-        // @ts-ignore
         updated[index][key] = value;
         setFormData({ ...formData, conditions: updated });
     };
@@ -123,7 +138,7 @@ export default function SegmentsPage() {
         }
     };
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         const tokenStorage = localStorage.getItem('analgo_token') ?? '';
@@ -217,7 +232,7 @@ export default function SegmentsPage() {
                                 <td className="px-4 py-3 text-gray-700">
                                     {segment.conditions?.length > 0 ? (
                                         segment.conditions
-                                            .map((c: any) => `${c.field} ${c.operator} ${c.value}`)
+                                            .map((c) => `${c.field} ${c.operator} ${c.value}`)
                                             .join(", ")
                                     ) : (
                                         <span className="text-gray-400">No rules found</span>
