@@ -22,8 +22,7 @@ export default function DashboardPage() {
     const [editingDescription, setEditingDescription] = useState(false);
     const [tempWidgets, setTempWidgets] = useState<string[]>([]);
     const [isDraggable, setIsDraggable] = useState(false);
-    const [layout, setLayout] = useState<{i: 3,x: 0,y: 100,w: 3,h: 2,minW: 1,maxW: 6,minH: 1,maxH: 4}[]>([]);
-
+    const [layout, setLayout] = useState<{ i: string; x: number; y: number; w: number; h: number; minW?: number; maxW?: number; minH?: number; maxH?: number; }[]>([]);
 
     const handleLayoutChange = (newLayout: any[]) => {
         setLayout(newLayout);
@@ -80,7 +79,6 @@ export default function DashboardPage() {
     const saveDashboardSettings = async () => {
         try {
             const analgoToken = localStorage.getItem('analgo_token');
-            console.log('save layout', layout);
             if (analgoToken) {
                 const params = new URLSearchParams();
                 params.append('analgoToken', analgoToken);
@@ -180,7 +178,7 @@ export default function DashboardPage() {
                         {widgets.map((id, index) => (
                             <div
                                 key={id}
-                                data-grid={layout.find((l) => l.i === id) || { w: 3, h: 2 }}
+                                data-grid={layout.find((l) => l.i === id) || { i: id, x: 0, y: 0, w: 3, h: 2 }}
                                 className="cursor-move"
                             >
 

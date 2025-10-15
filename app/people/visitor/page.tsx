@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import {VisitorsChart} from '../../components/VisitorsChart';
 import {
   useReactTable,
   getCoreRowModel,
@@ -243,11 +242,6 @@ export default function VisitorPage() {
                     </select>
                 </div>
             </div>
-            {visitors.length > 0 &&
-            <div className="alert alert-info justify-content-between shadow-sm">
-                <VisitorsChart data={visitors} />
-            </div>
-            }
             {loading ? (
                 <p>Loading visitors...</p>
             ) : (
