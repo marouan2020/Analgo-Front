@@ -189,3 +189,6 @@ aside.left{
 .container-dashboard{
     min-height: 650px;
 }
+.stat-chart{
+    height: 100%
+}
