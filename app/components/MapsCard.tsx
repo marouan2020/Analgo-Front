@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Pencil } from 'lucide-react';
+import axios from "axios";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -13,7 +14,6 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdn.analgo.tech/marker-shadow.png',
 });
 
-// 🧠 Chargement dynamique pour éviter l’erreur “window is not defined”
 const MapContainer = dynamic(
     () => import('react-leaflet').then((mod) => mod.MapContainer),
     { ssr: false }
@@ -56,9 +56,10 @@ export default function MapsCard({title: initialTitle = 'Map Widget', descriptio
 
     // ✅ Centre moyen automatique
     const center = useMemo(() => {
+
         if (!markers || markers.length === 0) return [0, 0] as [number, number];
-        const avgLat = markers.reduce((sum, m) => sum + m.lat, 0) / markers.length;
-        const avgLon = markers.reduce((sum, m) => sum + m.lon, 0) / markers.length;
+        const avgLat = markers.reduce((sum, m) => sum + m.latitude, 0) / markers.length;
+        const avgLon = markers.reduce((sum, m) => sum + m.longitude, 0) / markers.length;
         return [avgLat, avgLon] as [number, number];
     }, [markers]);
 
@@ -72,10 +73,19 @@ export default function MapsCard({title: initialTitle = 'Map Widget', descriptio
     }
 
     // ✅ Sauvegarde des modifications
-    const handleSave = () => {
-        setIsEditing(false);
-        if (onChange) {
-            onChange({ title, description });
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const savedToken = localStorage.getItem('analgo_token');
+            await axios.post(`${process.env.NEXT_PUBLIC_ENDPOINT_EDIT_WIDGET!}?analgoToken=${savedToken}`, {
+                title: title,
+                description: description,
+                type: 'maps_01',
+            });
+        } catch(err) {
+            console.error(err);
+        } finally {
+           setIsEditing(false);
         }
     };
 
@@ -140,14 +150,12 @@ export default function MapsCard({title: initialTitle = 'Map Widget', descriptio
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     {markers.map((marker, index) => (
-                        <Marker key={index} position={[marker.lat, marker.lon]}>
+                        <Marker key={index} position={[marker.latitude, marker.longitude]}>
                             <Popup>
                                 <div className="text-sm text-gray-800">
-                                    <strong>IP:</strong> {marker.ip}
+                                    <strong>Country:</strong> {marker.countryName}
                                     <br />
-                                    <strong>Latitude:</strong> {marker.lat.toFixed(2)}
-                                    <br />
-                                    <strong>Longitude:</strong> {marker.lon.toFixed(2)}
+                                    <strong>City:</strong> {marker.cityName}
                                 </div>
                             </Popup>
                         </Marker>
