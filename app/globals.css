@@ -192,3 +192,7 @@ aside.left{
 .stat-chart{
     height: 100%
 }
+.maps.absolute {
+    z-index: 999999;
+    padding-bottom: 8px;
+}

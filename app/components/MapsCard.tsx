@@ -1,11 +1,11 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Pencil } from 'lucide-react';
 import axios from "axios";
+import BarChartHeader from "@/app/components/BarChartHeader";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -45,99 +45,25 @@ interface MapsCardProps {
     onChange?: (data: { title: string; description: string }) => void;
 }
 
-/**
- * 🗺️ MapsCard
- * Affiche une carte Leaflet avec titre et description éditables.
- */
-export default function MapsCard({title: initialTitle = 'Map Widget', description: initialDescription = '', markers, editable = false, onChange,}: MapsCardProps) {
-    const [title, setTitle] = useState(initialTitle);
-    const [description, setDescription] = useState(initialDescription);
-    const [isEditing, setIsEditing] = useState(false);
+export default function MapsCard({title = 'Map Widget', description = 'Add description', markers, editable = false, onChange,}: MapsCardProps) {
 
-    // ✅ Centre moyen automatique
     const center = useMemo(() => {
-
         if (!markers || markers.length === 0) return [0, 0] as [number, number];
         const avgLat = markers.reduce((sum, m) => sum + m.latitude, 0) / markers.length;
         const avgLon = markers.reduce((sum, m) => sum + m.longitude, 0) / markers.length;
         return [avgLat, avgLon] as [number, number];
     }, [markers]);
 
-    // ✅ Aucun marqueur
-    if (!markers || markers.length === 0) {
-        return (
-            <div className="text-gray-400 text-center py-6 border rounded-xl">
-                No markers to display.
-            </div>
-        );
-    }
-
-    // ✅ Sauvegarde des modifications
-    const handleSave = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const savedToken = localStorage.getItem('analgo_token');
-            await axios.post(`${process.env.NEXT_PUBLIC_ENDPOINT_EDIT_WIDGET!}?analgoToken=${savedToken}`, {
-                title: title,
-                description: description,
-                type: 'maps_01',
-            });
-        } catch(err) {
-            console.error(err);
-        } finally {
-           setIsEditing(false);
-        }
-    };
-
     return (
         <div className="w-full h-100 border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
-            {/* 🔹 Titre et description */}
-            <div
-                className={`pl-4 pt-2 border-b z-99999 border-gray-100 bg-gray-50 ${
-                    isEditing ? 'absolute h-45  w-full' : 'relative'
-                }`}
-            >
-                {editable && (
-                    <button
-                        className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition"
-                        onClick={() => setIsEditing(!isEditing)}
-                        title={isEditing ? 'Save' : 'Edit'}
-                    >
-                        <Pencil size={18} />
-                    </button>
-                )}
-
-                {isEditing ? (
-                    <div className="space-y-2">
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full border rounded-md px-2 py-1 text-gray-800 font-medium"
-                            placeholder="Enter a title..."
-                        />
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full border rounded-md px-2 py-1 text-gray-700 text-sm"
-                            placeholder="Enter a description..."
-                        />
-                        <button
-                            onClick={handleSave}
-                            className="mt-1 px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
-                        >
-                            Save
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        <p className='mb-0 w-full text-1xl pb-1 font-bold'>{title}</p>
-                        <p className='mb-0 w-full text-gray-500 pb-2 font-normal'>{description}</p>
-                    </>
-                )}
-            </div>
-
-            {/* 🔹 Carte Leaflet */}
+            {/* Header du graphique */}
+            <BarChartHeader
+                type={'maps'}
+                title={title}
+                description={description}
+                editable={editable}
+                onChange={onChange}
+            />
             <div className="w-full h-100">
                 <MapContainer
                     center={center}
