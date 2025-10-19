@@ -16,20 +16,18 @@ export default function CreateGuidePage() {
             alert('Title is required.');
             return;
         }
-
         if (!url.trim()) {
             alert('URL is required.');
             return;
         }
-
         if (!url.startsWith('http')) {
             alert('Please enter a valid URL (e.g. https://yourapp.com).');
             return;
         }
-
         const newWindow = window.open(url, '_blank');
         setTimeout(() => {
             console.log('📤 Sending message to client site...');
+            const token = localStorage.getItem('analgo_token');
             newWindow?.postMessage(
                 {
                     action: 'LAUNCH_GUIDE_DESIGNER',
@@ -37,6 +35,8 @@ export default function CreateGuidePage() {
                     title: title,
                     source: 'analgo-designer-agent',
                     type: 'popup',
+                    token: token,
+                    status: 0,
                 },
                 url
             );

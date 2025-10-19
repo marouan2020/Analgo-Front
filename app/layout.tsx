@@ -50,8 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `}
           </Script>
       </head>
-      <body>
-          <main className='bg-gradient-to-tr from-sky-100 via-sky-200 to-blue-300'>
+      <body className='bg-dark'>
+          <main className='h-100 bg-gradient-to-tr from-sky-100 via-sky-200 to-blue-300'>
               {!isLoggedIn && <Header />}
               <div className='col-12'>
                   {isLoggedIn && <Topbar />}

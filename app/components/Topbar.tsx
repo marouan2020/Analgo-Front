@@ -24,15 +24,6 @@ export default function Topbar() {
             </div>
 
             <div className="d-flex align-items-center gap-3">
-                {/* Premium Offer Button */}
-                <Link
-                    href="/premium"
-                    className="btn-premium d-flex align-items-center fw-semibold"
-                >
-                    <FontAwesomeIcon icon={faStar} className="me-2 text-warning" />
-                    Premium Offer
-                </Link>
-
                 {/* Dropdown Menu */}
                 <Dropdown align="end">
                     <Dropdown.Toggle

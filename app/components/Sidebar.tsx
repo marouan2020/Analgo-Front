@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { Dropdown, Nav } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+    faCode,
+    faTags,
+    faBookOpen,
     faChartLine,
     faUsers,
     faChalkboardTeacher,
@@ -53,10 +56,22 @@ export default function Sidebar() {
               </Dropdown.Menu>
           </Dropdown>
         <Nav.Item>
-          <Link href="/dashboard" className="nav-link text-white">
+          <Link href="/ai-seo" className="nav-link text-white">
               <FontAwesomeIcon icon={faChartLine} className="me-2" />
               AI SEO Analyzer
           </Link>
+            <Link href="/Developer" className="nav-link text-white">
+                <FontAwesomeIcon icon={faCode} className="me-2" />
+                Developer
+            </Link>
+            <Link href="/docs" className="nav-link text-white">
+                <FontAwesomeIcon icon={faBookOpen} className="me-2" />
+                Docs
+            </Link>
+            <Link href="/pricing" className="nav-link text-white">
+                <FontAwesomeIcon icon={faTags} className="me-2" />
+                Pricing
+            </Link>
         </Nav.Item>
       </Nav>
     </aside >

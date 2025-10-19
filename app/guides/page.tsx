@@ -4,11 +4,15 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { PlusCircle, Trash2, Pencil } from 'lucide-react';
+import {cn} from "@/lib/utils";
+import {Button} from "@/app/components/ui/button";
 
 interface Guide {
     id: string;
     title: string;
     description?: string;
+    url?: string;
+    type?:string;
     createdAt?: string;
 }
 
@@ -48,6 +52,27 @@ export default function GuidesListPage() {
         }
     };
 
+    // @ts-ignore
+    const handleLaunchDesigner = (title, url, type) => {
+        const newWindow = window.open(url, '_blank');
+        setTimeout(() => {
+            console.log('📤 Sending message to client site...');
+            const token = localStorage.getItem('analgo_token');
+            newWindow?.postMessage(
+                {
+                    action: 'LAUNCH_GUIDE_DESIGNER',
+                    targetUrl: url,
+                    title: title,
+                    source: 'analgo-designer-agent',
+                    type: type,
+                    token: token,
+                    status: 0,
+                },
+                url
+            );
+        }, 1000);
+    };
+
     return (
         <div className="p-8">
             <div className="flex justify-between items-center mb-6">
@@ -71,18 +96,18 @@ export default function GuidesListPage() {
                             key={guide.id}
                             className="border rounded-lg shadow-sm bg-white p-4 relative"
                         >
-                            <h2 className="text-lg font-semibold mb-1">{guide.title}</h2>
+                            <p className="text-md font-semibold mb-2">{guide.title}</p>
                             <p className="text-sm text-gray-600 line-clamp-2">
-                                {guide.description || 'No description'}
+                                {guide.description}
                             </p>
 
                             <div className="flex justify-end mt-4 gap-3">
-                                <Link
-                                    href={`/guides/${guide.id}`}
+                                <button
+                                    onClick={() => handleLaunchDesigner(guide.title, guide.url, guide.type)}
                                     className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
                                 >
                                     <Pencil size={16} /> Modifier
-                                </Link>
+                                </button>
                                 <button
                                     onClick={() => handleDelete(guide.id)}
                                     disabled={deletingId === guide.id}
@@ -92,12 +117,9 @@ export default function GuidesListPage() {
                                     {deletingId === guide.id ? 'Delete...' : 'Delete'}
                                 </button>
                             </div>
-
                             <span className="absolute bottom-2 left-4 text-xs text-gray-400">
-                {guide.createdAt
-                    ? new Date(guide.createdAt).toLocaleDateString()
-                    : ''}
-              </span>
+                            {guide.createdAt ? new Date(guide.createdAt).toLocaleDateString() : ''}
+                            </span>
                         </div>
                     ))}
                 </div>
