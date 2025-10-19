@@ -23,6 +23,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^4.1.0",
     "leaflet": "^1.9.4",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
@@ -37,6 +38,7 @@
     "react-grid-layout": "^1.5.2",
     "react-leaflet": "^5.0.0",
     "react-resizable": "^3.0.5",
+    "react-rnd": "^10.5.2",
     "recharts": "^3.2.1"
   },
   "devDependencies": {

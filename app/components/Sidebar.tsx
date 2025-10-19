@@ -44,7 +44,7 @@ export default function Sidebar() {
                   Guides
               </Dropdown.Toggle>
               <Dropdown.Menu variant="dark">
-                  <Dropdown.Item as={Link} href="/dashboard">
+                  <Dropdown.Item as={Link} href="/guides">
                       Guide
                   </Dropdown.Item>
                   <Dropdown.Item as={Link} href="/dashboard">
