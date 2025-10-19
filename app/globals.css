@@ -196,3 +196,20 @@ aside.left{
     z-index: 999999;
     padding-bottom: 8px;
 }
+.btn-premium {
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: #ffd700;
+    padding: 8px 18px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    box-shadow: inset 0 0 0 0 transparent;
+}
+.btn-premium:hover {
+    background: linear-gradient(90deg, #ffcf33, #f7a400);
+    color: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 200, 50, 0.4);
+    border-color: transparent;
+}
