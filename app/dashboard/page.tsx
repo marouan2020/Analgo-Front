@@ -19,6 +19,8 @@ export default function DashboardPage() {
     const [isDraggable, setIsDraggable] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [tempWidgets, setTempWidgets] = useState<string[]>([]);
+    const [success, setSuccess] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('analgo_token');
@@ -40,6 +42,10 @@ export default function DashboardPage() {
                 setMarkers(markersRes);
             } catch (err) {
                 console.error(err);
+                setError('An error occured after load dashboard!');
+                setTimeout(function() {
+                    setError(null);
+                },3000);
             }
         };
         fetchData();
@@ -51,13 +57,29 @@ export default function DashboardPage() {
             await axios.post(`${process.env.NEXT_PUBLIC_ENDPOINT_SAVE_DASHBOARD}?analgoToken=${token}`, {
                 title, description, layout, widgets,
             });
+            setSuccess('Dashboard saved success.');
         } catch (err) {
-            console.error("Error saving dashboard", err);
+            console.error('Error saving dashboard.', err);
+            setError('Error saving dashboard.');
         }
+        setTimeout(function() {
+            setSuccess(null);
+            setError(null);
+        },3000);
     };
 
     return (
         <div className="p-6 space-y-6">
+            {success && (
+                <div className="mb-4 p-3 fixed-msg rounded-start-2 bg-green-100 text-green-800 border border-green-300">
+                    {success}
+                </div>
+            )}
+            {error && (
+                <div className="mb-4 p-3 fixed-msg rounded-start-2 bg-red-100 text-red-800 border border-red-300">
+                    {error}
+                </div>
+            )}
             <DashboardHeader
                 title={title}
                 setTitle={setTitle}
